@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { useSelector, useDispatch} from 'react-redux';
 import { Pressable, RefreshControl, StyleSheet } from 'react-native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import {useFocusEffect } from '@react-navigation/native';
+import { useFocusEffect } from '@react-navigation/native';
 import {
   Box,
   Button,
@@ -16,7 +16,7 @@ import {
   Divider,
   ScrollView,
 } from 'native-base';
-import { getBalance } from '../../redux/actions';
+import { getBalance, getAllStellarData, getAllEthData } from '../../redux/actions';
 import Tokens from './components/Tokens';
 import OperationCurrencies from '../HeaderCurrencies/OperationCurrencies';
 
@@ -28,6 +28,8 @@ export default function UserCriptos({navigation}) {
   const [currencies, setCurrencies] = useState([])
   const [refreshing, setRefreshing] = useState(false);
   const Tab = createMaterialTopTabNavigator();
+  const allStellarData = useSelector(state => state.allStellarData);
+  const allEthData = useSelector(state => state.allEthData);
 
   React.useEffect( () => {
     if (balance) {
@@ -45,6 +47,14 @@ export default function UserCriptos({navigation}) {
       return  () => {};
     }, [])
   );
+
+  React.useEffect(() => {
+    dispatch(getAllStellarData());
+    dispatch(getAllEthData());
+  },[])
+
+  console.log(allStellarData())
+  console.log(allEthData())
 
   return (
     <>    
