@@ -31,6 +31,11 @@ export default function UserCriptos({navigation}) {
   const allStellarData = useSelector(state => state.allStellarData);
   const allEthData = useSelector(state => state.allEthData);
 
+  React.useEffect(() => {
+    dispatch(getAllStellarData());
+    dispatch(getAllEthData());
+  },[])
+
   React.useEffect( () => {
     if (balance) {
       setBalanceUsd(parseFloat(balance[blockChain]?.cryptoBalance).toFixed(2));
@@ -47,14 +52,6 @@ export default function UserCriptos({navigation}) {
       return  () => {};
     }, [])
   );
-
-  React.useEffect(() => {
-    dispatch(getAllStellarData());
-    dispatch(getAllEthData());
-  },[])
-
-  console.log(allStellarData())
-  console.log(allEthData())
 
   return (
     <>    
@@ -79,13 +76,38 @@ export default function UserCriptos({navigation}) {
       <Divider alignSelf="center" my="3" width="91%" bg='theme.300'/>
     
       <ScrollView mt="5" >
-        {
-          currencies?.map((element, index)=>{
-            return (
-              <Tokens key={index} currency={element.currency} amount={element.amount} nav={navigation}/>
-            );
-          })
+        
+          {/* blockChain === "stellar" ?
+            currencies?.map((element, index)=>{
+              return (
+                <Tokens key={index} symbol={element.currency} name={allStellarData.filter(cur => cur.symbol === element.currency)[0].amount} price={allStellarData.filter(cur => cur.symbol === element.currency)[0].price} img={allStellarData.filter(cur => cur.symbol === element.currency)[0].img} amount={element.amount} nav={navigation}/>
+              );
+            }) : 
+            currencies?.map((element, index)=>{
+              return (
+                <Tokens key={index} symbol={element.currency} name={allEthData.filter(cur => cur.symbol === element.currency)[0].amount} price={allEthData.filter(cur => cur.symbol === element.currency)[0].price} img={allEthData.filter(cur => cur.symbol === element.currency)[0].img} amount={element.amount} nav={navigation}/>
+              );
+            }) */
+          }
+       
+        {blockChain === "stellar" ?
+          (allStellarData.length === 1 ?
+            currencies?.map((element, index)=>{ return ( <Tokens key={index} symbol={element.currency} name={"Coin"} price={element.amount} percDay={"+0,00%"} img={""} nav={navigation}/>)}) :
+            allStellarData?.map((el, index)=>{ return ( <Tokens key={index} symbol={el.symbol} name={el.name} price={currencies?.filter(cur => cur.currency === el.symbol)[0].amount} percDay={el.percDay} img={el.img} nav={navigation}/>)})
+          ) :
+          (allEthData.length === 1 ?
+            currencies?.map((element, index)=>{ return ( <Tokens key={index} symbol={element.currency} name={"Coin"} price={element.amount} percDay={"+0,00%"} img={""} nav={navigation}/>)}) :
+            allEthData?.map((el, index)=>{ return ( <Tokens key={index} symbol={el.symbol} name={el.name} price={el.price} percDay={el.percDay} img={el.img} nav={navigation}/>)})
+          )
         }
+        {/* (allStellarData.length === 1 ?
+            currencies?.map((element, index)=>{ return ( <Tokens key={index} symbol={element.currency} name={"Coin"} price={element.amount} percDay={"+0,00%"} img={""} nav={navigation}/>)}) :
+            allStellarData?.map((el, index)=>{
+              if (currencies.filter(cur => cur.currency === el.symbol)[0].amount > 0) {
+                return (<Tokens key={index} symbol={el.symbol} name={el.name} price={currencies.filter(cur => cur.currency === el.symbol)[0].amount} percDay={el.percDay} img={el.img} nav={navigation}/>)
+              }
+            })
+          ) : */}
       </ScrollView>
     </>
   );

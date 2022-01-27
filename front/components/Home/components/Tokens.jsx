@@ -7,11 +7,11 @@ import {
   Divider
 } from 'native-base';
 
-export default function Tokens({currency, amount, nav}) {
+export default function Tokens({symbol, name, price, img, nav}) {
   return (
     <>
       <Pressable 
-        onPress={()=>{nav.navigate("OperationCurrencies",{currency})}}
+        onPress={()=>{nav.navigate("OperationCurrencies",{symbol})}}
         alignSelf="center"
         flexDirection="row"
         justifyContent="flex-start"
@@ -26,13 +26,20 @@ export default function Tokens({currency, amount, nav}) {
         borderWidth="0.4px"
         borderColor="theme.400"
       >
-        <Avatar bg="theme.50" size="33px">
-          <Text color="theme.100" fontWeight="bold" fontSize="18px">{currency.charAt(0)}</Text>
-        </Avatar>
+        {img !== "" ?
+          <Avatar bg="theme.150" size="33px" source={{
+            uri: img
+            }}
+          /> : 
+          <Avatar bg="theme.50" size="33px">
+            <Text color="theme.100" fontWeight="bold" fontSize="18px">{symbol.charAt(0)}</Text>
+          </Avatar>
+        }
+        
+        <Text ml="15px" fontSize="16px" color="theme.50" letterSpacing="1px">{name}</Text>
 
-        <Text ml="15px" fontSize="16px" color="theme.50" letterSpacing="1px">{currency}</Text>
-
-        <Text ml="auto" color="theme.50">{parseFloat(amount).toFixed(5)}</Text>
+        {/* <Text ml="auto" color="theme.50">{parseFloat(price).toFixed(5)}  {symbol}</Text> */}
+        <Text ml="auto" color="theme.50">{parseFloat(price).toFixed(5)}  {symbol}</Text>
       </Pressable>
     </>
   );
